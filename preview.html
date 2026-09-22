@@ -3,59 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Todos Preview</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 0 16px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-    li.done {
-      background: #f4f4f4;
-      color: #888;
-      text-decoration: line-through;
-    }
-    .title {
-      font-weight: bold;
-    }
-    .meta {
-      font-size: 0.85em;
-      color: #666;
-      text-decoration: none;
-    }
-    .status {
-      font-size: 0.8em;
-      padding: 2px 8px;
-      border-radius: 12px;
-      white-space: nowrap;
-    }
-    .status.done {
-      background: #d4edda;
-      color: #155724;
-    }
-    .status.pending {
-      background: #fff3cd;
-      color: #856404;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Todos</h1>
-  <ul id="todo-list"></ul>
+  <header class="site-header">
+    <a class="brand" href="index.html">Day04</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="active" href="preview.html">Preview</a></li>
+    </ul>
+  </header>
+
+  <main>
+    <h1 class="page-title">Todos</h1>
+    <p class="page-subtitle">Supabase의 test_todos 테이블 데이터를 불러옵니다.</p>
+
+    <ul class="todo-list" id="todo-list"></ul>
+  </main>
 
   <script>
     const SUPABASE_URL = "https://dooycrpyifzdqijrqbli.supabase.co/rest/v1/";
@@ -78,25 +43,25 @@
         const todos = await res.json();
 
         if (todos.length === 0) {
-          listEl.innerHTML = "<li>데이터가 없습니다.</li>";
+          listEl.innerHTML = `<li class="state-message">데이터가 없습니다.</li>`;
           return;
         }
 
         listEl.innerHTML = todos
           .map((todo) => `
-            <li class="${todo.done ? "done" : ""}">
+            <li class="todo-item ${todo.done ? "done" : ""}">
               <div>
-                <div class="title">${todo.title}</div>
-                <div class="meta">마감일 ${todo.due_date} · 수량 ${todo.amount}</div>
+                <div class="todo-title">${todo.title}</div>
+                <div class="todo-meta">마감일 ${todo.due_date} · 수량 ${todo.amount}</div>
               </div>
-              <span class="status ${todo.done ? "done" : "pending"}">
+              <span class="todo-status ${todo.done ? "done" : "pending"}">
                 ${todo.done ? "완료" : "진행중"}
               </span>
             </li>
           `)
           .join("");
       } catch (err) {
-        listEl.innerHTML = `<li>오류: ${err.message}</li>`;
+        listEl.innerHTML = `<li class="state-message">오류: ${err.message}</li>`;
       }
     }
 
