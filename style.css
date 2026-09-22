@@ -175,8 +175,8 @@ main {
 }
 
 .todo-status.done {
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  background: #e3f8e9;
+  color: #1e8a4c;
 }
 
 .todo-status.pending {
