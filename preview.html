@@ -3,6 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>Todos Preview</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    li.done {
+      background: #f4f4f4;
+      color: #888;
+      text-decoration: line-through;
+    }
+    .title {
+      font-weight: bold;
+    }
+    .meta {
+      font-size: 0.85em;
+      color: #666;
+      text-decoration: none;
+    }
+    .status {
+      font-size: 0.8em;
+      padding: 2px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .status.done {
+      background: #d4edda;
+      color: #155724;
+    }
+    .status.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+  </style>
 </head>
 <body>
   <h1>Todos</h1>
@@ -15,7 +64,7 @@
     async function loadTodos() {
       const listEl = document.getElementById("todo-list");
       try {
-        const res = await fetch(`${SUPABASE_URL}test_todos?select=*`, {
+        const res = await fetch(`${SUPABASE_URL}test_todos?select=*&order=due_date.asc`, {
           headers: {
             apikey: SUPABASE_KEY,
             Authorization: `Bearer ${SUPABASE_KEY}`
@@ -34,7 +83,17 @@
         }
 
         listEl.innerHTML = todos
-          .map((todo) => `<li>${JSON.stringify(todo)}</li>`)
+          .map((todo) => `
+            <li class="${todo.done ? "done" : ""}">
+              <div>
+                <div class="title">${todo.title}</div>
+                <div class="meta">마감일 ${todo.due_date} · 수량 ${todo.amount}</div>
+              </div>
+              <span class="status ${todo.done ? "done" : "pending"}">
+                ${todo.done ? "완료" : "진행중"}
+              </span>
+            </li>
+          `)
           .join("");
       } catch (err) {
         listEl.innerHTML = `<li>오류: ${err.message}</li>`;
